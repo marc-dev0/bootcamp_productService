@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class ProductServiceImpl implements IProductService {
     @Autowired
-    IProductRepository productRepository;
+    private IProductRepository productRepository;
 
     @Override
     public Mono<ProductDto> saveProduct(Mono<ProductDto> productDtoMono) {
@@ -22,21 +22,25 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public Flux<ProductDto> getProducts() {
-        return null;
+        return productRepository.findAll().map(AppUtils::entityToDto);
     }
 
     @Override
     public Mono<ProductDto> getProduct(String id) {
-        return null;
+        return productRepository.findById(id).map(AppUtils::entityToDto);
     }
 
     @Override
     public Mono<ProductDto> updateProduct(Mono<ProductDto> productDtoMono, String id) {
-        return null;
+        return productRepository.findById(id).flatMap(
+                p -> productDtoMono.map(AppUtils::dtoToEntity)
+                .doOnNext(e -> e.setId(id))
+        ).flatMap(productRepository::save)
+                .map(AppUtils::entityToDto);
     }
 
     @Override
     public Mono<Void> deleteProduct(String id) {
-        return null;
+        return productRepository.deleteById(id);
     }
 }

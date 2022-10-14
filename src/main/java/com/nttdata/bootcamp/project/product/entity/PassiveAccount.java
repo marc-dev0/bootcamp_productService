@@ -7,14 +7,19 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "product")
+import java.sql.Date;
+
+@Document(collection = "passiveAccount")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class PassiveAccount /*extends AbstractAccount */{
     @Id
     private String id;
+    private String product;
     private String description;
     private String creationDate;
+    private Double commission;
+    private Integer movementLimit;
 }
